@@ -29,7 +29,10 @@ public class VertxConfig implements ApplicationContextAware{
     public static AnnotationConfigApplicationContext ctx;
 
     @Autowired
-    private HttpServer httpServer;
+    private ServiceEndpointServer serviceEndpointServer;
+
+    @Autowired
+    private HttpServer server;
 
     @Autowired
     private Vertx vertx;
@@ -54,7 +57,8 @@ public class VertxConfig implements ApplicationContextAware{
     @PostConstruct
     public void gameOn(){
         vertx.deployVerticle(JsonVerticle.class.getName(), new DeploymentOptions().setInstances(8));
-        httpServer.listen(8080);
+        serviceEndpointServer.start();
+        server.listen(8080);
     }
 
     @Bean
@@ -62,9 +66,9 @@ public class VertxConfig implements ApplicationContextAware{
         HttpServer server = vertx.createHttpServer().requestHandler(router::accept);
         server.requestHandler(req -> {
             if (req.method() == HttpMethod.GET) {
-                if(req.path().equals(Paths.FILE.getValue())){
+                if (req.path().equals(Paths.FILE.getValue())) {
                     req.response().sendFile("index.html");
-                }else {
+                } else {
                     req.response().setChunked(true);
                     delegateToBus(req, vertx.eventBus());
                 }
@@ -74,6 +78,24 @@ public class VertxConfig implements ApplicationContextAware{
             }
         });
         return server;
+    }
+
+    @Bean
+    public io.advantageous.qbit.http.server.HttpServer qbitServer(HttpServer server){
+        return VertxHttpServerBuilder.vertxHttpServerBuilder()
+                .setRoute(qbitRoute)
+                .setHttpServer(server)
+                .setVertx(vertx)
+                .build();
+    }
+
+    @Bean
+    public ServiceEndpointServer serviceEndpointServer(io.advantageous.qbit.http.server.HttpServer qbitServer){
+        return EndpointServerBuilder.endpointServerBuilder()
+                       .setHttpServer(qbitServer)
+                       .setUri("/")
+                       .addServices(new SimpleService())
+                       .build();
     }
 
     public void delegateToBus(HttpServerRequest req, EventBus eventBus){
@@ -94,46 +116,4 @@ public class VertxConfig implements ApplicationContextAware{
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         ctx = (AnnotationConfigApplicationContext)applicationContext;
     }
-
-////    @PostConstruct
-//    public void deployHandlers(){
-//        Map<String, Object> handlers = ctx.getBeansWithAnnotation(VertxEndpoint.class);
-//        EventBus eventBus = vertx.eventBus();
-//        for(Map.Entry<String, Object> handlerEntry : handlers.entrySet()){
-//            VertxEndpoint vertxSetting= handlerEntry.getValue().getClass().getAnnotation(VertxEndpoint.class);
-//            if (Endpoint.class.isAssignableFrom(handlerEntry.getValue().getClass())) {
-//                Endpoint endpointService = (Endpoint) handlerEntry.getValue();
-//                if(vertxSetting.blocking()){
-//                    eventBus.consumer(vertxSetting.path().getValue()).handler(blockingHandler(endpointService));
-//                }else {
-//                    eventBus.consumer(vertxSetting.path().getValue()).handler(msg -> {
-//                        try {
-//                            endpointService.processRequest(msg);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                            msg.reply(e.getCause());
-//                        }
-//                    });
-//                }
-//            }
-//        }
-//    }
-//
-//    private Handler<Message<Object>> blockingHandler(Endpoint service) {
-//        return msg -> vertx.<Object>executeBlocking(future -> {
-//                    try {
-//                        service.processRequest(msg);
-//                        future.complete(msg.body());
-//                    } catch (Exception e) {
-//                        future.fail(e);
-//                    }
-//                },false,
-//                result -> {
-//                    if (result.succeeded()) {
-//                        msg.reply(result.result());
-//                    } else {
-//                        msg.reply(result.cause().toString());
-//                    }
-//                });
-//    }
 }

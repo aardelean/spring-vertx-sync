@@ -46,6 +46,10 @@ dependencies {
     compile "org.hibernate:hibernate-entitymanager:5.0.1.Final"
     compile "org.mongodb:mongodb-driver-async:3.0.2"
     compile "mysql:mysql-connector-java"
+    compile "io.advantageous.qbit:qbit-core:0.9.1-SNAPSHOT"
+    compile ("io.advantageous.qbit:qbit-vertx:0.9.1-SNAPSHOT"){
+        exclude group: "io.vertx"
+    }
     compile "org.infinispan:infinispan-spring4:8.0.1.Final"
     compile "org.infinispan:infinispan-cachestore-jpa:8.0.1.Final"
     compile ("org.hibernate:hibernate-infinispan:5.0.1.Final"){

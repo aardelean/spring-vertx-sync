@@ -2,25 +2,22 @@ package home.spring.vertx.sync.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import home.spring.vertx.sync.dao.EmployeeDao;
-import home.spring.vertx.sync.endpoint.Endpoint;
-import home.spring.vertx.sync.endpoint.Paths;
-import home.spring.vertx.sync.endpoint.VertxEndpoint;
-import io.vertx.core.eventbus.Message;
+import io.advantageous.qbit.annotation.RequestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by alex on 9/27/2015.
  */
-@VertxEndpoint(path = Paths.MYSQL, blocking = true)
-public class EmployeeService implements Endpoint {
+@RequestMapping("/mysql")
+public class EmployeeService {
 
     @Autowired
     private EmployeeDao employeeDao;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @Override
-    public void processRequest(Message<Object> request) throws Exception{
-        request.reply(objectMapper.writeValueAsString(employeeDao.findOne(1l)));
+    @RequestMapping("/check")
+    public String processRequest() throws Exception{
+       return objectMapper.writeValueAsString(employeeDao.findOne(1l));
     }
 }

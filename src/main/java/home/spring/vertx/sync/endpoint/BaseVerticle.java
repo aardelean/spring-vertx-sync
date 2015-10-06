@@ -33,4 +33,6 @@ public class BaseVerticle extends SyncVerticle {
     public void stop() throws Exception {
         super.stop();
     }
+
+
 }

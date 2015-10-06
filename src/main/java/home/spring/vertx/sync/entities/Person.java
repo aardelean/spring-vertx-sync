@@ -9,6 +9,8 @@ import org.bson.Document;
  */
 @Data
 public class Person {
+
+    private String _id;
     private int age;
     private String gender;
     private String name;

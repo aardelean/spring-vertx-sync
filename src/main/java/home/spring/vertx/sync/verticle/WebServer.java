@@ -1,4 +1,4 @@
-package home.spring.vertx.sync.endpoint;
+package home.spring.vertx.sync.verticle;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;

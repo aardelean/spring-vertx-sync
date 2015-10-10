@@ -1,4 +1,4 @@
-package home.spring.vertx.sync.services;
+package home.spring.vertx.sync.endpoint.qbit;
 
 import com.mongodb.async.client.MongoCollection;
 import com.mongodb.async.client.MongoDatabase;
@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
  * Created by alex on 9/27/2015.
  */
 @RequestMapping("/mongo")
-public class PersonService{
+public class RestMongoEndpoint {
 
     private final static String id="eefa89c4-ec21-11e4-b08b-b75697636679-8e488775";
 

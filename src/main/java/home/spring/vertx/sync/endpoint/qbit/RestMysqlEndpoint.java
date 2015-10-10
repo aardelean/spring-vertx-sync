@@ -1,4 +1,4 @@
-package home.spring.vertx.sync.services;
+package home.spring.vertx.sync.endpoint.qbit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import home.spring.vertx.sync.dao.EmployeeDao;
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Created by alex on 9/27/2015.
  */
 @RequestMapping("/mysql")
-public class EmployeeService {
+public class RestMysqlEndpoint {
 
     @Autowired
     private EmployeeDao employeeDao;

@@ -1,9 +1,9 @@
 package home.spring.vertx.sync;
 
-import home.spring.vertx.sync.services.ComplexService;
-import home.spring.vertx.sync.services.EmployeeService;
-import home.spring.vertx.sync.services.JsonService;
-import home.spring.vertx.sync.services.PersonService;
+import home.spring.vertx.sync.endpoint.qbit.RestComplexEndpoint;
+import home.spring.vertx.sync.endpoint.qbit.RestMysqlEndpoint;
+import home.spring.vertx.sync.endpoint.qbit.RestJsonEndpoint;
+import home.spring.vertx.sync.endpoint.qbit.RestMongoEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,20 +13,21 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ServicesConfig {
     @Bean
-    public JsonService simpleService(){
-        return new JsonService();
+    public RestJsonEndpoint simpleService(){
+        return new RestJsonEndpoint();
     }
     @Bean
-    public PersonService personService(){
-        return new PersonService();
+    public RestMongoEndpoint personService(){
+        return new RestMongoEndpoint();
     }
     @Bean
-    public EmployeeService employeeService(){
-        return new EmployeeService();
+    public RestMysqlEndpoint employeeService(){
+        return new RestMysqlEndpoint();
     }
 
     @Bean
-    public ComplexService complexService(){
-        return new ComplexService();
+    public RestComplexEndpoint complexService(){
+        return new RestComplexEndpoint();
     }
+
 }

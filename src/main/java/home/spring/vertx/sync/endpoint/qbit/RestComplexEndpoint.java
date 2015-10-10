@@ -1,4 +1,4 @@
-package home.spring.vertx.sync.services;
+package home.spring.vertx.sync.endpoint.qbit;
 
 import co.paralleluniverse.fibers.Suspendable;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,13 +16,13 @@ import java.io.UnsupportedEncodingException;
  * Created by alex on 10/3/2015.
  */
 @RequestMapping("/complex")
-public class ComplexService {
+public class RestComplexEndpoint {
 
     @Autowired
     private EmployeeDao employeeDao;
 
     @Autowired
-    private PersonService personService;
+    private RestMongoEndpoint personService;
 
     @Autowired
     private RestClient restClient;

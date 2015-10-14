@@ -13,7 +13,6 @@ import io.vertx.core.eventbus.Message;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.CompletableFuture;
@@ -22,8 +21,7 @@ import java.util.concurrent.CompletableFuture;
  * Created by alex on 10/10/2015.
  */
 @VertxEndpoint(path = Paths.COMPLEX)
-@Service
-public class DirectComplexHandler implements Endpoint {
+public class ComplexHandler implements Endpoint {
 
     @Autowired
     private EmployeeDao employeeDao;
@@ -44,7 +42,7 @@ public class DirectComplexHandler implements Endpoint {
     private ObjectMapper objectMapper=new ObjectMapper();
 
     @Override
-    public void processRequest(Message<Object> request) throws Exception {
+    public void processGet(Message<Object> request) throws Exception {
         request.reply(combinatedOperation());
     }
     public String combinatedOperation() throws Exception {
@@ -55,8 +53,7 @@ public class DirectComplexHandler implements Endpoint {
         return Double.toString(calculated)
                 + futureResult.get()
                 + objectMapper.writeValueAsString(employee)
-                +  response
-        ;
+                +  response;
     }
 
     @Suspendable
@@ -64,7 +61,6 @@ public class DirectComplexHandler implements Endpoint {
         return employeeDao.findOne(1l);
     }
 
-    @Suspendable
     public CompletableFuture<String> person() throws Exception {
         CompletableFuture<String> mongoResult = new CompletableFuture();
         MongoCollection<Document> collection = mongoDatabase.getCollection("Person");
@@ -74,7 +70,7 @@ public class DirectComplexHandler implements Endpoint {
 
     @Suspendable
     public String response()  throws SuspendExecution, UnsupportedEncodingException {
-        return restClient.targetWithParams(externalUrl).request().get(String.class);
+        return restClient.get(externalUrl, String.class);
     }
 
     public double calculate(){
